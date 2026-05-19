@@ -1,12 +1,17 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 
+from app.dependencies.auth import verify_api_key
 from app.schemas.fmcsa import FMCSAValidateResponse
 from app.services.fmcsa import FMCSAError, validate_mc_number
 
 router = APIRouter(tags=["fmcsa"])
 
 
-@router.get("/fmcsa-validate", response_model=FMCSAValidateResponse)
+@router.get(
+    "/fmcsa-validate",
+    response_model=FMCSAValidateResponse,
+    dependencies=[Depends(verify_api_key)],
+)
 def fmcsa_validate(
     mc_number: str = Query(..., min_length=1, description="Motor carrier MC number"),
 ) -> FMCSAValidateResponse:

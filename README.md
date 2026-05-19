@@ -43,9 +43,12 @@ Proof of concept for the HappyRobot **FDE Technical Challenge: Inbound Carrier S
    ```bash
    curl http://localhost:8000/
    curl http://localhost:8000/health
+   curl -H "X-API-Key: dev-change-me" "http://localhost:8000/fmcsa-validate?mc_number=1515"
    ```
 
    With Postgres running via Compose, `/health` should report `"database": "ok"`.
+
+   Protected routes require the `X-API-Key` header (value from `API_KEY` in `.env`).
 
 ## Deploy on Render
 
@@ -61,7 +64,7 @@ Environment variables (set by Blueprint):
 | Variable | Source |
 |----------|--------|
 | `DATABASE_URL` | Linked from `happyrobot-db` |
-| `API_KEY` | Auto-generated (not enforced yet) |
+| `API_KEY` | Auto-generated; required as `X-API-Key` header on protected routes |
 | `ENVIRONMENT` | `production` |
 | `FMCSA_WEB_KEY` | Set manually in Render (from [FMCSA QCMobile](https://mobile.fmcsa.dot.gov/QCDevsite/)) |
 
@@ -91,7 +94,7 @@ Planned in later iterations (not in this scaffold):
 - ~~FMCSA carrier verification (MC number)~~ — `GET /fmcsa-validate?mc_number=...` (requires `FMCSA_WEB_KEY`)
 - Negotiation flow (up to 3 counter-offers) and mock transfer message
 - Call extraction, outcome classification, and sentiment
-- API key authentication on all endpoints
+- API key authentication on remaining endpoints
 - Dashboard metrics (calls, outcomes, negotiation stats, sentiment)
 
 ## License
