@@ -38,6 +38,7 @@ Proof of concept for the HappyRobot **FDE Technical Challenge: Inbound Carrier S
    | http://localhost:8000/health | Liveness + database connectivity |
    | http://localhost:8000/dashboard | Placeholder metrics dashboard |
    | http://localhost:8000/docs | OpenAPI (Swagger UI) |
+   | http://localhost:8000/fmcsa-validate?mc_number=123456 | FMCSA carrier eligibility check |
 
    ```bash
    curl http://localhost:8000/
@@ -62,6 +63,7 @@ Environment variables (set by Blueprint):
 | `DATABASE_URL` | Linked from `happyrobot-db` |
 | `API_KEY` | Auto-generated (not enforced yet) |
 | `ENVIRONMENT` | `production` |
+| `FMCSA_WEB_KEY` | Set manually in Render (from [FMCSA QCMobile](https://mobile.fmcsa.dot.gov/QCDevsite/)) |
 
 HTTPS is provided by Render; no extra TLS setup is required for the web service.
 
@@ -86,7 +88,7 @@ Planned in later iterations (not in this scaffold):
 
 - Load CRUD API and seed data (`load_id`, origin, destination, rates, etc.)
 - HappyRobot inbound agent integration (web call trigger)
-- FMCSA carrier verification (MC number)
+- ~~FMCSA carrier verification (MC number)~~ — `GET /fmcsa-validate?mc_number=...` (requires `FMCSA_WEB_KEY`)
 - Negotiation flow (up to 3 counter-offers) and mock transfer message
 - Call extraction, outcome classification, and sentiment
 - API key authentication on all endpoints

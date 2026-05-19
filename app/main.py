@@ -5,6 +5,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from app.db.database import check_db_connection
+from app.routers.fmcsa import router as fmcsa_router
 
 app = FastAPI(
     title="Inbound Carrier Sales",
@@ -13,6 +14,8 @@ app = FastAPI(
 )
 
 templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
+
+app.include_router(fmcsa_router)
 
 
 @app.get("/")

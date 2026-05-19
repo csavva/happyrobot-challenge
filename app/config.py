@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     database_url: str | None = None
     api_key: str = "dev-change-me"
     environment: str = "development"
+    fmcsa_web_key: str | None = None
 
 
 settings = Settings()

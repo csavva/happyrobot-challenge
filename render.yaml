@@ -13,6 +13,8 @@ services:
         generateValue: true
       - key: ENVIRONMENT
         value: production
+      - key: FMCSA_WEB_KEY
+        sync: false
 
 databases:
   - name: happyrobot-db
