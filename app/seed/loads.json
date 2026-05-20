@@ -1,7 +1,7 @@
 [
   {
-    "reference_number": "HR-2847",
-    "load_id": "HR-2847",
+    "reference_number": "HRL2847",
+    "load_id": "HRL2847",
     "origin": "Columbus, Ohio",
     "destination": "Cartersville, Georgia",
     "pickup_datetime": "2025-07-28T04:00:00-04:00",
@@ -16,8 +16,8 @@
     "dimensions": "53 ft"
   },
   {
-    "reference_number": "HR-1092",
-    "load_id": "HR-1092",
+    "reference_number": "HRB1092",
+    "load_id": "HRB1092",
     "origin": "Boise, Idaho",
     "destination": "Los Angeles, California",
     "pickup_datetime": "2025-07-27T06:00:00-06:00",
@@ -32,8 +32,8 @@
     "dimensions": "48 ft flatbed"
   },
   {
-    "reference_number": "HR-3310",
-    "load_id": "HR-3310",
+    "reference_number": "HRM3310",
+    "load_id": "HRM3310",
     "origin": "Menasha, Wisconsin",
     "destination": "Ada, Michigan",
     "pickup_datetime": "2025-07-27T15:00:00-05:00",
@@ -48,8 +48,8 @@
     "dimensions": "53 ft van minimum"
   },
   {
-    "reference_number": "HR-5501",
-    "load_id": "HR-5501",
+    "reference_number": "HRD5501",
+    "load_id": "HRD5501",
     "origin": "Dallas, Texas",
     "destination": "Atlanta, Georgia",
     "pickup_datetime": "2025-07-30T08:00:00-05:00",
@@ -64,8 +64,8 @@
     "dimensions": "53 ft"
   },
   {
-    "reference_number": "HR-7720",
-    "load_id": "HR-7720",
+    "reference_number": "HRC7720",
+    "load_id": "HRC7720",
     "origin": "Chicago, Illinois",
     "destination": "Denver, Colorado",
     "pickup_datetime": "2025-07-29T10:00:00-05:00",

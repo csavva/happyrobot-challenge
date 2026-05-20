@@ -39,20 +39,20 @@ Proof of concept for the HappyRobot **FDE Technical Challenge: Inbound Carrier S
    | http://localhost:8000/dashboard | Placeholder metrics dashboard |
    | http://localhost:8000/docs | OpenAPI (Swagger UI) |
    | http://localhost:8000/fmcsa-validate?mc_number=123456 | FMCSA carrier eligibility check |
-   | http://localhost:8000/loads-search?reference_number=HR-2847 | Load lookup by posting reference |
+   | http://localhost:8000/loads-search?reference_number=HRL2847 | Load lookup by posting reference |
 
    ```bash
    curl http://localhost:8000/
    curl http://localhost:8000/health
    curl -H "X-API-Key: dev-change-me" "http://localhost:8000/fmcsa-validate?mc_number=1515"
-   curl -H "X-API-Key: dev-change-me" "http://localhost:8000/loads-search?reference_number=HR-2847"
+   curl -H "X-API-Key: dev-change-me" "http://localhost:8000/loads-search?reference_number=HRL2847"
    ```
 
    With Postgres running via Compose, `/health` should report `"database": "ok"`.
 
    Protected routes require the `X-API-Key` header (value from `API_KEY` in `.env`).
 
-   **Seed reference numbers** (auto-loaded on first startup): `HR-2847`, `HR-1092`, `HR-3310`, `HR-5501`, `HR-7720`.
+   **Seed reference numbers** (3 letters + 4 digits, auto-loaded on first startup): `HRL2847`, `HRB1092`, `HRM3310`, `HRD5501`, `HRC7720`.
 
 ## Deploy on Render
 
