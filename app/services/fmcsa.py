@@ -67,7 +67,7 @@ def _carrier_display_name(carrier: dict[str, Any]) -> str | None:
 
 
 def _build_eligibility(carrier: dict[str, Any], mc_number: str) -> FMCSAValidateResponse:
-    allow_to_operate = _yn_to_bool(carrier.get("allowToOperate") or carrier.get("allow_to_operate"))
+    allow_to_operate = _yn_to_bool(carrier.get("allowedToOperate") or carrier.get("allowed_to_operate"))
     out_of_service = _yn_to_bool(carrier.get("outOfService") or carrier.get("out_of_service"))
 
     legal_name = carrier.get("legalName") or carrier.get("legal_name")
