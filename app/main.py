@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, Request
@@ -5,17 +6,28 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from app.db.database import check_db_connection
+from app.db.init_db import init_database
 from app.routers.fmcsa import router as fmcsa_router
+from app.routers.loads import router as loads_router
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    init_database()
+    yield
+
 
 app = FastAPI(
     title="Inbound Carrier Sales",
     description="HappyRobot FDE Technical Challenge — inbound carrier load sales automation",
     version="0.1.0",
+    lifespan=lifespan,
 )
 
 templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
 
 app.include_router(fmcsa_router)
+app.include_router(loads_router)
 
 
 @app.get("/")

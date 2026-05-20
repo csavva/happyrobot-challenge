@@ -39,16 +39,20 @@ Proof of concept for the HappyRobot **FDE Technical Challenge: Inbound Carrier S
    | http://localhost:8000/dashboard | Placeholder metrics dashboard |
    | http://localhost:8000/docs | OpenAPI (Swagger UI) |
    | http://localhost:8000/fmcsa-validate?mc_number=123456 | FMCSA carrier eligibility check |
+   | http://localhost:8000/loads-search?reference_number=HR-2847 | Load lookup by posting reference |
 
    ```bash
    curl http://localhost:8000/
    curl http://localhost:8000/health
    curl -H "X-API-Key: dev-change-me" "http://localhost:8000/fmcsa-validate?mc_number=1515"
+   curl -H "X-API-Key: dev-change-me" "http://localhost:8000/loads-search?reference_number=HR-2847"
    ```
 
    With Postgres running via Compose, `/health` should report `"database": "ok"`.
 
    Protected routes require the `X-API-Key` header (value from `API_KEY` in `.env`).
+
+   **Seed reference numbers** (auto-loaded on first startup): `HR-2847`, `HR-1092`, `HR-3310`, `HR-5501`, `HR-7720`.
 
 ## Deploy on Render
 
@@ -78,7 +82,8 @@ app/
   config.py         # Settings from environment
   db/database.py    # SQLAlchemy engine and health check
   templates/        # Dashboard HTML
-seed/               # Future load seed scripts
+seed/               # Optional manual seed runner (`python -m seed.seed_loads`)
+app/seed/loads.json # Demo load dataset (auto-seeded on startup when DB is empty)
 Dockerfile
 docker-compose.yml
 render.yaml
@@ -89,7 +94,8 @@ requirements.txt
 
 Planned in later iterations (not in this scaffold):
 
-- Load CRUD API and seed data (`load_id`, origin, destination, rates, etc.)
+- ~~Load search by reference~~ — `GET /loads-search?reference_number=...` (seed data in `app/seed/loads.json`)
+- Load search by lane / equipment (no reference number)
 - HappyRobot inbound agent integration (web call trigger)
 - ~~FMCSA carrier verification (MC number)~~ — `GET /fmcsa-validate?mc_number=...` (requires `FMCSA_WEB_KEY`)
 - Negotiation flow (up to 3 counter-offers) and mock transfer message
