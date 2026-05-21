@@ -1,5 +1,6 @@
 from app.db.base import Base
 from app.db.database import SessionLocal, engine
+from app.seed.seed_calls import seed_calls_if_empty
 from app.seed.seed_loads import seed_loads_if_empty
 
 
@@ -12,5 +13,6 @@ def init_database() -> None:
     db = SessionLocal()
     try:
         seed_loads_if_empty(db)
+        seed_calls_if_empty(db)
     finally:
         db.close()

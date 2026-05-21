@@ -1,0 +1,26 @@
+[
+  {
+    "classification": "Success",
+    "reference_number": "HRL2847",
+    "mc_number": "123456",
+    "decline_reason": "",
+    "booking_decision": "yes",
+    "call_duration": "245"
+  },
+  {
+    "classification": "Rate too high",
+    "reference_number": "HRB1092",
+    "mc_number": "789012",
+    "decline_reason": "rate too high",
+    "booking_decision": "no",
+    "call_duration": "180"
+  },
+  {
+    "classification": "Not interested",
+    "reference_number": "HRM3310",
+    "mc_number": "456789",
+    "decline_reason": "lane timing does not work",
+    "booking_decision": "no",
+    "call_duration": "95"
+  }
+]

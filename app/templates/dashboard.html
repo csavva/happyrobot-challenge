@@ -12,42 +12,118 @@
       background: #f6f7f9;
     }
     body {
-      max-width: 48rem;
+      max-width: 56rem;
       margin: 2rem auto;
-      padding: 0 1rem;
+      padding: 0 1rem 3rem;
     }
-    header {
-      margin-bottom: 2rem;
+    header { margin-bottom: 2rem; }
+    h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 0.25rem; }
+    .subtitle { color: #5c6370; margin: 0; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
     }
-    h1 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin: 0 0 0.25rem;
-    }
-    .subtitle {
-      color: #5c6370;
-      margin: 0;
-    }
-    main {
+    .card {
       background: #fff;
       border: 1px solid #e2e5ea;
       border-radius: 8px;
-      padding: 1.5rem;
+      padding: 1rem 1.25rem;
     }
-    a {
-      color: #2563eb;
+    .card-label { font-size: 0.8rem; color: #5c6370; margin: 0 0 0.25rem; }
+    .card-value { font-size: 1.75rem; font-weight: 600; margin: 0; }
+    section {
+      background: #fff;
+      border: 1px solid #e2e5ea;
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
     }
+    h2 { font-size: 1rem; font-weight: 600; margin: 0 0 1rem; }
+    .breakdown { list-style: none; padding: 0; margin: 0; }
+    .breakdown li {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #eef0f3;
+    }
+    .breakdown li:last-child { border-bottom: none; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid #eef0f3; }
+    th { color: #5c6370; font-weight: 500; }
+    .empty { color: #5c6370; margin: 0; }
+    a { color: #2563eb; }
   </style>
 </head>
 <body>
   <header>
     <h1>Inbound Carrier Sales</h1>
-    <p class="subtitle">HappyRobot FDE Technical Challenge — metrics dashboard</p>
+    <p class="subtitle">Call analytics — HappyRobot inbound carrier load sales</p>
   </header>
-  <main>
-    <p>Metrics dashboard coming soon.</p>
-    <p>Call outcomes, negotiation stats, and carrier sentiment will appear here in a future iteration.</p>
-    <p><a href="/docs">API documentation</a></p>
-  </main>
+
+  <div class="cards">
+    <div class="card">
+      <p class="card-label">Total calls</p>
+      <p class="card-value">{{ analytics.summary.total_calls }}</p>
+    </div>
+    <div class="card">
+      <p class="card-label">Success rate</p>
+      <p class="card-value">{{ analytics.summary.success_rate_percent }}%</p>
+    </div>
+    <div class="card">
+      <p class="card-label">Avg duration</p>
+      <p class="card-value">{{ analytics.summary.avg_call_duration_seconds }}s</p>
+    </div>
+    <div class="card">
+      <p class="card-label">Bookings (yes / no)</p>
+      <p class="card-value">{{ analytics.summary.booking_yes }} / {{ analytics.summary.booking_no }}</p>
+    </div>
+  </div>
+
+  <section>
+    <h2>By classification</h2>
+    <ul class="breakdown">
+      {% for label, count in analytics.summary.by_classification.items() %}
+      <li><span>{{ label }}</span><strong>{{ count }}</strong></li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section>
+    <h2>Recent calls</h2>
+    {% if analytics.recent_calls %}
+    <table>
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Reference</th>
+          <th>MC</th>
+          <th>Classification</th>
+          <th>Booking</th>
+          <th>Duration</th>
+          <th>Decline reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for call in analytics.recent_calls %}
+        <tr>
+          <td>{{ call.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td>{{ call.reference_number }}</td>
+          <td>{{ call.mc_number }}</td>
+          <td>{{ call.classification }}</td>
+          <td>{{ call.booking_decision }}</td>
+          <td>{{ call.call_duration_seconds }}s</td>
+          <td>{{ call.decline_reason or '—' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="empty">No calls logged yet.</p>
+    {% endif %}
+  </section>
+
+  <p><a href="/docs">API documentation</a> · <a href="/analytics/calls">Analytics JSON</a></p>
 </body>
 </html>

@@ -1,7 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 
-from sqlalchemy import DateTime, Integer, Numeric, String, Text
+from sqlalchemy import DateTime, Integer, Numeric, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -25,3 +25,19 @@ class Load(Base):
     num_of_pieces: Mapped[int] = mapped_column(Integer)
     miles: Mapped[int] = mapped_column(Integer)
     dimensions: Mapped[str | None] = mapped_column(String(128), nullable=True)
+
+
+class Call(Base):
+    __tablename__ = "calls"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    classification: Mapped[str] = mapped_column(String(64), index=True)
+    reference_number: Mapped[str] = mapped_column(String(64), index=True)
+    mc_number: Mapped[str] = mapped_column(String(32))
+    decline_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    booking_decision: Mapped[str] = mapped_column(String(8))
+    call_duration_seconds: Mapped[int] = mapped_column(Integer)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+    )

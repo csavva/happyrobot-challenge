@@ -1,23 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.db.database import SessionLocal
 from app.db.models import Load
 from app.dependencies.auth import verify_api_key
+from app.dependencies.db import get_db_session
 from app.schemas.loads import LoadOut, LoadsSearchResponse
 
 router = APIRouter(tags=["loads"])
-
-
-def get_db_session() -> Session:
-    if SessionLocal is None:
-        raise HTTPException(status_code=503, detail="Database is not configured")
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @router.get(
