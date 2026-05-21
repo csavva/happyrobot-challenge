@@ -5,6 +5,7 @@ from app.db.models import Call
 from app.schemas.calls import CallAnalyticsResponse, CallAnalyticsSummary, CallOut
 
 CLASSIFICATIONS = ("Success", "Rate too high", "Not interested")
+SENTIMENTS = ("Positive", "Negative", "Neutral")
 RECENT_CALLS_LIMIT = 20
 
 
@@ -20,6 +21,16 @@ def get_call_analytics(db: Session) -> CallAnalyticsResponse:
     for classification, count in rows:
         if classification in by_classification:
             by_classification[classification] = count
+
+    by_sentiment: dict[str, int] = {label: 0 for label in SENTIMENTS}
+    sentiment_rows = (
+        db.query(Call.call_sentiment, func.count(Call.id))
+        .group_by(Call.call_sentiment)
+        .all()
+    )
+    for sentiment, count in sentiment_rows:
+        key = sentiment if sentiment in by_sentiment else "Neutral"
+        by_sentiment[key] = by_sentiment.get(key, 0) + count
 
     booking_yes = (
         db.query(func.count(Call.id)).filter(Call.booking_decision == "yes").scalar() or 0
@@ -48,6 +59,7 @@ def get_call_analytics(db: Session) -> CallAnalyticsResponse:
             total_calls=total_calls,
             success_rate_percent=success_rate_percent,
             by_classification=by_classification,
+            by_sentiment=by_sentiment,
             booking_yes=booking_yes,
             booking_no=booking_no,
             avg_call_duration_seconds=round(avg_call_duration_seconds, 1),

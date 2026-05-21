@@ -36,6 +36,7 @@ class Call(Base):
     mc_number: Mapped[str] = mapped_column(String(32))
     decline_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     booking_decision: Mapped[str] = mapped_column(String(8))
+    call_sentiment: Mapped[str] = mapped_column(String(16), index=True, server_default="Neutral")
     call_duration_seconds: Mapped[int] = mapped_column(Integer)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

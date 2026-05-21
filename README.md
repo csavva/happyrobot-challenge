@@ -48,7 +48,7 @@ Proof of concept for the HappyRobot **FDE Technical Challenge: Inbound Carrier S
    curl -X POST http://localhost:8000/calls \
      -H "X-API-Key: dev-change-me" \
      -H "Content-Type: application/json" \
-     -d '{"classification":"Not interested","reference_number":"HRB1092","mc_number":"MC123456","decline_reason":"timing","booking_decision":"no","call_duration":"120"}'
+     -d '{"classification":"Not interested","reference_number":"HRB1092","mc_number":"MC123456","decline_reason":"timing","booking_decision":"no","call_sentiment":"Neutral","call_duration":"120"}'
    ```
 
    Protected routes require the `X-API-Key` header (value from `API_KEY` in `.env`).
@@ -66,6 +66,7 @@ Proof of concept for the HappyRobot **FDE Technical Challenge: Inbound Carrier S
 | `reference_number` | Load reference from posting |
 | `mc_number` | Carrier MC number |
 | `decline_reason` | Free text when declined; empty string if N/A |
+| `call_sentiment` | `Positive`, `Negative`, or `Neutral` |
 | `call_duration` | Duration in seconds (string or number, e.g. `"120"`) |
 
 ## Deploy on Render

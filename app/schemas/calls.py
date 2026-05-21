@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 
 Classification = Literal["Success", "Rate too high", "Not interested"]
 BookingDecision = Literal["yes", "no"]
+CallSentiment = Literal["Positive", "Negative", "Neutral"]
 
 
 class CallCreate(BaseModel):
@@ -13,6 +14,7 @@ class CallCreate(BaseModel):
     mc_number: str = Field(..., min_length=1)
     decline_reason: str = ""
     booking_decision: BookingDecision
+    call_sentiment: CallSentiment
     call_duration: int = 0
 
     @field_validator("reference_number", "mc_number", "decline_reason", mode="before")
@@ -54,6 +56,7 @@ class CallOut(BaseModel):
     mc_number: str
     decline_reason: str | None
     booking_decision: str
+    call_sentiment: str
     call_duration_seconds: int
     created_at: datetime
 
@@ -62,6 +65,7 @@ class CallAnalyticsSummary(BaseModel):
     total_calls: int
     success_rate_percent: float
     by_classification: dict[str, int]
+    by_sentiment: dict[str, int]
     booking_yes: int
     booking_no: int
     avg_call_duration_seconds: float

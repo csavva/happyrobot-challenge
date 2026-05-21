@@ -91,6 +91,15 @@
   </section>
 
   <section>
+    <h2>By sentiment</h2>
+    <ul class="breakdown">
+      {% for label, count in analytics.summary.by_sentiment.items() %}
+      <li><span>{{ label }}</span><strong>{{ count }}</strong></li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section>
     <h2>Recent calls</h2>
     {% if analytics.recent_calls %}
     <table>
@@ -100,6 +109,7 @@
           <th>Reference</th>
           <th>MC</th>
           <th>Classification</th>
+          <th>Sentiment</th>
           <th>Booking</th>
           <th>Duration</th>
           <th>Decline reason</th>
@@ -112,6 +122,7 @@
           <td>{{ call.reference_number }}</td>
           <td>{{ call.mc_number }}</td>
           <td>{{ call.classification }}</td>
+          <td>{{ call.call_sentiment }}</td>
           <td>{{ call.booking_decision }}</td>
           <td>{{ call.call_duration_seconds }}s</td>
           <td>{{ call.decline_reason or '—' }}</td>

@@ -30,6 +30,7 @@ def seed_calls_if_empty(db: Session) -> int:
                 mc_number=normalize_mc_number(payload.mc_number),
                 decline_reason=_empty_to_none(payload.decline_reason),
                 booking_decision=payload.booking_decision,
+                call_sentiment=payload.call_sentiment,
                 call_duration_seconds=payload.call_duration,
             )
         )
