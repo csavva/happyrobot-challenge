@@ -48,6 +48,9 @@ HappyRobot post-call webhook. JSON body:
 | `mc_number` | Carrier MC number |
 | `decline_reason` | Text if declined; `""` otherwise |
 | `call_duration` | Seconds (string or number) |
+| `carrier_initial_offer` | Optional initial carrier rate |
+| `final_agreed_rate` | Optional agreed rate |
+| `num_negotiation_rounds` | Optional; `0` if no negotiation |
 
 ```bash
 curl -X POST http://localhost:8000/calls \
@@ -58,7 +61,7 @@ curl -X POST http://localhost:8000/calls \
 
 ### GET `/analytics/calls`
 
-JSON summary: totals, success rate, classification and sentiment breakdowns, recent calls.
+JSON summary: totals, success rate, classification and sentiment breakdowns, `avg_final_rate`, `avg_negotiation_rounds`, recent calls.
 
 ## Deploy on Render
 

@@ -16,6 +16,24 @@ def _migrate_calls_schema() -> None:
                 "call_sentiment VARCHAR(16) NOT NULL DEFAULT 'Neutral'"
             )
         )
+        conn.execute(
+            text(
+                "ALTER TABLE calls ADD COLUMN IF NOT EXISTS "
+                "carrier_initial_offer NUMERIC(12, 2)"
+            )
+        )
+        conn.execute(
+            text(
+                "ALTER TABLE calls ADD COLUMN IF NOT EXISTS "
+                "final_agreed_rate NUMERIC(12, 2)"
+            )
+        )
+        conn.execute(
+            text(
+                "ALTER TABLE calls ADD COLUMN IF NOT EXISTS "
+                "num_negotiation_rounds INTEGER"
+            )
+        )
 
 
 def init_database() -> None:

@@ -37,6 +37,9 @@ class Call(Base):
     decline_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     booking_decision: Mapped[str] = mapped_column(String(8))
     call_sentiment: Mapped[str] = mapped_column(String(16), index=True, server_default="Neutral")
+    carrier_initial_offer: Mapped[Decimal | None] = mapped_column(Numeric(12, 2), nullable=True)
+    final_agreed_rate: Mapped[Decimal | None] = mapped_column(Numeric(12, 2), nullable=True)
+    num_negotiation_rounds: Mapped[int | None] = mapped_column(Integer, nullable=True)
     call_duration_seconds: Mapped[int] = mapped_column(Integer)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

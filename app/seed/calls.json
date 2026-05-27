@@ -6,6 +6,9 @@
     "decline_reason": "",
     "booking_decision": "yes",
     "call_sentiment": "Positive",
+    "carrier_initial_offer": 1750.0,
+    "final_agreed_rate": 1830.0,
+    "num_negotiation_rounds": 2,
     "call_duration": "245"
   },
   {

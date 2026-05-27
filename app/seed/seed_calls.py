@@ -31,6 +31,9 @@ def seed_calls_if_empty(db: Session) -> int:
                 decline_reason=_empty_to_none(payload.decline_reason),
                 booking_decision=payload.booking_decision,
                 call_sentiment=payload.call_sentiment,
+                carrier_initial_offer=payload.carrier_initial_offer,
+                final_agreed_rate=payload.final_agreed_rate,
+                num_negotiation_rounds=payload.num_negotiation_rounds,
                 call_duration_seconds=payload.call_duration,
             )
         )

@@ -79,6 +79,14 @@
       <p class="card-label">Bookings (yes / no)</p>
       <p class="card-value">{{ analytics.summary.booking_yes }} / {{ analytics.summary.booking_no }}</p>
     </div>
+    <div class="card">
+      <p class="card-label">Avg final rate</p>
+      <p class="card-value">{% if analytics.summary.avg_final_rate is not none %}${{ analytics.summary.avg_final_rate }}{% else %}—{% endif %}</p>
+    </div>
+    <div class="card">
+      <p class="card-label">Avg negotiation rounds</p>
+      <p class="card-value">{% if analytics.summary.avg_negotiation_rounds is not none %}{{ analytics.summary.avg_negotiation_rounds }}{% else %}—{% endif %}</p>
+    </div>
   </div>
 
   <section>

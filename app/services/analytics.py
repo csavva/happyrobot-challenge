@@ -42,6 +42,12 @@ def get_call_analytics(db: Session) -> CallAnalyticsResponse:
     avg_duration = db.query(func.avg(Call.call_duration_seconds)).scalar()
     avg_call_duration_seconds = float(avg_duration) if avg_duration is not None else 0.0
 
+    avg_final = db.query(func.avg(Call.final_agreed_rate)).scalar()
+    avg_final_rate = round(float(avg_final), 2) if avg_final is not None else None
+
+    avg_rounds = db.query(func.avg(Call.num_negotiation_rounds)).scalar()
+    avg_negotiation_rounds = round(float(avg_rounds), 2) if avg_rounds is not None else None
+
     success_count = by_classification.get("Success", 0)
     success_rate_percent = (
         round(100.0 * success_count / total_calls, 1) if total_calls > 0 else 0.0
@@ -63,6 +69,8 @@ def get_call_analytics(db: Session) -> CallAnalyticsResponse:
             booking_yes=booking_yes,
             booking_no=booking_no,
             avg_call_duration_seconds=round(avg_call_duration_seconds, 1),
+            avg_final_rate=avg_final_rate,
+            avg_negotiation_rounds=avg_negotiation_rounds,
         ),
         recent_calls=[CallOut.model_validate(row) for row in recent],
     )
