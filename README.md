@@ -1,108 +1,79 @@
 # Inbound Carrier Sales
 
-Proof of concept for the HappyRobot **FDE Technical Challenge: Inbound Carrier Sales**. Freight brokers receive inbound calls from carriers looking to book loads; this system vets carriers (FMCSA), matches loads, logs call outcomes, and surfaces metrics on a custom dashboard.
+HappyRobot **FDE Technical Challenge** — inbound carrier load sales automation. Carriers are verified via FMCSA, loads are matched by reference number, call outcomes are logged from the voice agent, and metrics are shown on a custom dashboard.
 
-## Stack
+**Stack:** FastAPI · PostgreSQL · Docker · [Render](https://render.com/) Blueprint
 
-- **API:** [FastAPI](https://fastapi.tiangolo.com/)
-- **Dashboard:** HTML5 templates (Jinja2), server-rendered analytics
-- **Database:** PostgreSQL (SQLAlchemy)
-- **Containers:** Docker + Docker Compose (local), [Render](https://render.com/) Blueprint (production)
+## Quick start
 
-## Prerequisites
+```bash
+cp .env.example .env
+docker compose up --build
+```
 
-- [Docker](https://docs.docker.com/get-docker/) and Docker Compose
-- (Optional) [Render](https://render.com/) account for deployment
+Set `FMCSA_WEB_KEY` in `.env` for carrier verification ([FMCSA QCMobile](https://mobile.fmcsa.dot.gov/QCDevsite/)).
 
-## Local development
+| URL | Auth |
+|-----|------|
+| [/dashboard](http://localhost:8000/dashboard) | — |
+| [/analytics/calls](http://localhost:8000/analytics/calls) | — |
+| [/docs](http://localhost:8000/docs) | — |
+| `/health` | — |
+| `/fmcsa-validate?mc_number=…` | `X-API-Key` |
+| `/loads-search?reference_number=…` | `X-API-Key` |
+| `POST /calls` | `X-API-Key` |
 
-1. Copy environment variables:
+Local API key default: `dev-change-me` (`API_KEY` in `.env`).
 
-   ```bash
-   cp .env.example .env
-   ```
+## API
 
-2. Start the stack:
+### GET `/fmcsa-validate`
 
-   ```bash
-   docker compose up --build
-   ```
+Query param: `mc_number`. Returns eligibility and carrier name from FMCSA.
 
-3. Verify endpoints:
+### GET `/loads-search`
 
-   | URL | Description |
-   |-----|-------------|
-   | http://localhost:8000/ | Hello World JSON |
-   | http://localhost:8000/health | Liveness + database connectivity |
-   | http://localhost:8000/dashboard | Call analytics dashboard (HTML) |
-   | http://localhost:8000/analytics/calls | Call analytics (JSON) |
-   | http://localhost:8000/docs | OpenAPI (Swagger UI) |
-   | http://localhost:8000/fmcsa-validate?mc_number=123456 | FMCSA carrier eligibility (API key) |
-   | http://localhost:8000/loads-search?reference_number=HRL2847 | Load lookup (API key) |
+Query param: `reference_number` (e.g. `HRL2847`, `HRB1092`, `HRM3310`, `HRD5501`, `HRC7720`).
 
-   ```bash
-   curl http://localhost:8000/health
-   curl http://localhost:8000/analytics/calls
-   curl -H "X-API-Key: dev-change-me" "http://localhost:8000/fmcsa-validate?mc_number=1515"
-   curl -H "X-API-Key: dev-change-me" "http://localhost:8000/loads-search?reference_number=HRL2847"
-   curl -X POST http://localhost:8000/calls \
-     -H "X-API-Key: dev-change-me" \
-     -H "Content-Type: application/json" \
-     -d '{"classification":"Not interested","reference_number":"HRB1092","mc_number":"MC123456","decline_reason":"timing","booking_decision":"no","call_sentiment":"Neutral","call_duration":"120"}'
-   ```
+### POST `/calls`
 
-   Protected routes require the `X-API-Key` header (value from `API_KEY` in `.env`).
-
-   **Seed load reference numbers** (3 letters + 4 digits): `HRL2847`, `HRB1092`, `HRM3310`, `HRD5501`, `HRC7720`.
-
-   Demo **call** rows are seeded when the `calls` table is empty (see `app/seed/calls.json`).
-
-## POST /calls (HappyRobot post-call tool)
+HappyRobot post-call webhook. JSON body:
 
 | Field | Values |
 |-------|--------|
 | `classification` | `Success`, `Rate too high`, `Not interested` |
-| `booking_decision` | `yes` (required for Success), `no` (required for declines) |
-| `reference_number` | Load reference from posting |
+| `booking_decision` | `yes` (with Success), `no` (with declines) |
+| `call_sentiment` | `Positive`, `Negative`, `Neutral` |
+| `reference_number` | Load reference |
 | `mc_number` | Carrier MC number |
-| `decline_reason` | Free text when declined; empty string if N/A |
-| `call_sentiment` | `Positive`, `Negative`, or `Neutral` |
-| `call_duration` | Duration in seconds (string or number, e.g. `"120"`) |
+| `decline_reason` | Text if declined; `""` otherwise |
+| `call_duration` | Seconds (string or number) |
+
+```bash
+curl -X POST http://localhost:8000/calls \
+  -H "X-API-Key: dev-change-me" \
+  -H "Content-Type: application/json" \
+  -d '{"classification":"Success","reference_number":"HRL2847","mc_number":"145300","decline_reason":"","booking_decision":"yes","call_sentiment":"Positive","call_duration":"80"}'
+```
+
+### GET `/analytics/calls`
+
+JSON summary: totals, success rate, classification and sentiment breakdowns, recent calls.
 
 ## Deploy on Render
 
-1. Push this repository to GitHub (or GitLab/Bitbucket).
-2. In the [Render Dashboard](https://dashboard.render.com/), choose **New → Blueprint**.
-3. Connect the repository. Render reads [`render.yaml`](render.yaml) and provisions the web service and Postgres.
-4. After deploy, open `/dashboard`. The `calls` table is created on deploy via `create_all` (existing `loads` data is preserved).
+1. Push to GitHub and create a **Blueprint** from [`render.yaml`](render.yaml) (web service + Postgres).
+2. Set `FMCSA_WEB_KEY` in the web service environment.
+3. Use the generated `API_KEY` as `X-API-Key` in HappyRobot HTTP tools.
+4. Open `https://<your-service>.onrender.com/dashboard`.
 
-Environment variables:
+Tables and seed data load on first startup when the database is empty.
 
-| Variable | Source |
-|----------|--------|
-| `DATABASE_URL` | Linked from Postgres |
-| `API_KEY` | Auto-generated; use as `X-API-Key` on protected routes |
-| `ENVIRONMENT` | `production` |
-| `FMCSA_WEB_KEY` | Set manually ([FMCSA QCMobile](https://mobile.fmcsa.dot.gov/QCDevsite/)) |
+## Environment variables
 
-## Project layout
-
-```
-app/
-  main.py
-  routers/          # fmcsa, loads, calls, analytics
-  services/         # fmcsa client, analytics
-  db/models.py      # Load, Call
-  seed/             # loads.json, calls.json
-  templates/        # dashboard.html
-```
-
-## Roadmap
-
-- Load search by lane / equipment (no reference number)
-- Negotiation flow (up to 3 counter-offers) and mock transfer message
-- Sentiment on calls
-
-## License
-
-Private challenge repository.
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | PostgreSQL connection string |
+| `API_KEY` | Sent as `X-API-Key` on protected routes |
+| `FMCSA_WEB_KEY` | FMCSA QCMobile API key |
+| `ENVIRONMENT` | `development` or `production` |
